@@ -13,7 +13,10 @@ db.serialize(() => {
         defense INTEGER,
         sp_attack INTEGER,
         sp_defense INTEGER,
-        speed INTEGER
+        speed INTEGER,
+        sprite TEXT,
+        thumbnail TEXT,
+        image TEXT
       )
     `);
 });
