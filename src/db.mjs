@@ -11,9 +11,6 @@ db.serialize(() => {
         hp INTEGER,
         attack INTEGER,
         defense INTEGER,
-        sp_attack INTEGER,
-        sp_defense INTEGER,
-        speed INTEGER,
         sprite TEXT,
         thumbnail TEXT,
         image TEXT

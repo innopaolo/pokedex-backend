@@ -18,10 +18,10 @@ async function fetchDataAndInsert() {
         const { id, name, type, base } = item;
         console.log('Raw Data:', id, name.english, type[0], base.Defense);
         db.run(
-          'INSERT INTO pokemon (id, name, type, hp, attack, defense, sp_attack, sp_defense, speed) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+          'INSERT INTO pokemon (id, name, type, hp, attack, defense) VALUES (?, ?, ?, ?, ?, ?)',
   
           // Take only english name and join types if there are more than one
-          [id, name.english, type.join(', '), base.HP, base.Attack, base.Defense, base['Sp. Attack'], base['Sp. Defense'], base.Speed],
+          [id, name.english, type.join(', '), base.HP, base.Attack, base.Defense],
           (err) => {
             if (err) {
               console.error('Error inserting data:', err);
