@@ -66,11 +66,15 @@ app.get('/api/pokemon', (req, res) => {
   
   // Create a new Pokémon entry in the database
   app.post('/api/pokemon', (req, res) => {
-    const { name, type, hp, attack, defense, sp_attack, sp_defense, speed } = req.body;
+    const { name, type, imageUrl, hp, attack, defense } = req.body;
+
+    // Capitalize imageUrl
+    const cap = type[0].toUpperCase() + type.slice(1);
+
     const query = `
-      INSERT INTO pokemon (name, type, hp, attack, defense, sp_attack, sp_defense, speed)
+      INSERT INTO pokemon (name, type, hp, attack, defense, sprite, thumbnail, image)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
-    db.run(query, [name, type, hp, attack, defense, sp_attack, sp_defense, speed], (err) => {
+    db.run(query, [name, cap, hp, attack, defense, imageUrl, imageUrl, imageUrl], (err) => {
       if (err) {
         console.error('Database error:', err);
         res.status(500).json({ error: 'Database error' });
@@ -83,12 +87,12 @@ app.get('/api/pokemon', (req, res) => {
   // Update an existing Pokémon entry by ID in the database
   app.put('/api/pokemon/:id', (req, res) => {
     const { id } = req.params;
-    const { name, type, hp, attack, defense, sp_attack, sp_defense, speed } = req.body;
+    const { hp, attack, defense } = req.body;
     const query = `
       UPDATE pokemon
-      SET name = ?, type = ?, hp = ?, attack = ?, defense = ?, sp_attack = ?, sp_defense = ?, speed = ?
+      SET hp = ?, attack = ?, defense = ?
       WHERE id = ?`;
-    db.run(query, [name, type, hp, attack, defense, sp_attack, sp_defense, speed, id], (err) => {
+    db.run(query, [hp, attack, defense, id], (err) => {
       if (err) {
         console.error('Database error:', err);
         res.status(500).json({ error: 'Database error' });
