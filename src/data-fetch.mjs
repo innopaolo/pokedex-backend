@@ -16,7 +16,7 @@ async function fetchDataAndInsert() {
       // Loop through the data and insert into database
       data.forEach(async (item) => {
         const { id, name, type, base } = item;
-        console.log('Raw Data:', id, name.english, type[0], base.Defense);
+     
         db.run(
           'INSERT INTO pokemon (id, name, type, hp, attack, defense) VALUES (?, ?, ?, ?, ?, ?)',
   

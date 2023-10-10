@@ -1,7 +1,11 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const sqlite3 = require('sqlite3').verbose();
-const cors = require('cors');
+import express from 'express';
+import bodyParser from 'body-parser';
+import sqlite3 from 'sqlite3';
+import cors from 'cors';
+import { existsSync, unlinkSync } from 'fs';
+
+import fetchDataAndInsert from './data-fetch.mjs';
+import fetchImagesAndAssociate from './image-fetch.mjs';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -17,7 +21,7 @@ app.use(cors({
 app.use(bodyParser.json());
 
 // Create a database connection
-const db = new sqlite3.Database('./src/db.sqlite', sqlite3.OPEN_READWRITE, (err) => {
+const db = new sqlite3.Database('./db.sqlite', sqlite3.OPEN_READWRITE, (err) => {
     if (err) {
       console.error('Error opening database:', err);
     } else {
@@ -25,10 +29,10 @@ const db = new sqlite3.Database('./src/db.sqlite', sqlite3.OPEN_READWRITE, (err)
     }
   });
   
-  // Handle database errors
-  db.on('error', (err) => {
-    console.error('Database error:', err);
-  });
+// Handle database errors
+db.on('error', (err) => {
+  console.error('Database error:', err);
+});
 
 // Start the server
 app.listen(port, () => {
@@ -114,6 +118,27 @@ app.get('/api/pokemon', (req, res) => {
         res.json({ message: 'Pokémon deleted successfully' });
       }
     });
+  });
+
+  // Rebuild the pokedex data by deleting the SQL database and re-fetching the JSON
+  app.post('/reset', async (req, res) => {
+    try {
+      // Delete the db.sqlite file if it exists
+      const dbFile = './src/db.sqlite';
+      if (existsSync(dbFile)) {
+        unlinkSync(dbFile);
+        console.log('db.sqlite deleted successfully');
+      }
+
+      // These imported functions will refetch the JSON and create a new db file
+      await fetchDataAndInsert();
+      await fetchImagesAndAssociate();
+
+      res.status(200).json({ message: 'Pokedex reset successfully' });
+    } catch (error) {
+      console.error('Error resetting Pokedex:', error);
+      res.status(500).json({ error: 'Error resetting Pokedex' });
+    }
   });
   
 // Close the database connection when the server stops
