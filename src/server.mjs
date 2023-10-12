@@ -134,7 +134,16 @@ app.get('/api/pokemon', (req, res) => {
       await fetchDataAndInsert();
       await fetchImagesAndAssociate();
 
-      res.status(200).json({ message: 'Pokedex reset successfully' });
+      // USe pm2 to restart the server process
+      pm2.restart('pokedex', (err) => {
+        if (err) {
+          console.error('Error restarting server:', err);
+          res.status(500).json({ error: 'Error restarting server' });
+        } else {
+          console.log('Server restarted successfully');
+          res.status(200).json({ message: 'Pokedex reset successfully' });
+        }
+      });
     } catch (error) {
       console.error('Error resetting Pokedex:', error);
       res.status(500).json({ error: 'Error resetting Pokedex' });
