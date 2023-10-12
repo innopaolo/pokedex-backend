@@ -4,8 +4,8 @@ import sqlite3 from "sqlite3";
 import cors from "cors";
 import { existsSync, unlinkSync } from "fs";
 
-import fetchDataAndInsert from "./src/data-fetch.mjs";
-import fetchImagesAndAssociate from "./src/image-fetch.mjs";
+import fetchDataAndInsert from "./data-fetch.mjs";
+import fetchImagesAndAssociate from "./image-fetch.mjs";
 
 const app = express();
 const port = process.env.PORT || 3000;
